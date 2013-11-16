@@ -1,8 +1,11 @@
+package TheGreatHashtable;
 
 public class Node {
 	//Our Nodes Variables
 	int u; //upper bound
 	int l; //lower bound
+	public enum Bounds{'l','u'};
+	public enum Node{'x','y'};
 	// yNode and xNode are the nodes which are "pointed to", or more appropriately birthed or stemming from this Node.
 	Node yNode = null; //the y node connection (if there is any)
 	Node xNode = null; //the x node connection		   '' 
@@ -15,33 +18,29 @@ public class Node {
 	}
 	
 	//Getting information from our Node
-	public int Acq(char c){ 
+	public Object Acq(enum Node){ 
 		//Acq will return the value of of the upper bound (if given char 'u') or the lower bound (if given char 'l'). 
-		switch(c){
-		case 'u': 
-			return u;
-		case 'l': 
-			return l;
-		default: 
-			System.out.print("Warning: improper entry into Acquire Method. Returning 0.");
-			return 0;
+		switch(Node){
+			case 'y': 
+				return yNode; 
+			case 'x': 
+				return xNode;
 		}
 	}
+	
+	public int Acq(enum Bounds){
+		switch(Bounds){
+			case 'u': 
+				return u;
+			case 'l';
+				return l;
+		}
+	}
+	
 	public int[] Acq(){
 		//returns the upper and lower bound in the form of an array of int[2]
 		int[] a = {l,u};
 		return a;
-	}
-	public Object Acq(char c){//for acquiring attached nodes
-		switch(c){
-		case 'y': 
-			return yNode; 
-		case 'x': 
-			return xNode;
-		default:
-			System.out.print("Warning: improper entry into Node Aqcuire Method. Returning xNode.");
-			return xNode;
-		}
 	}
 	
 	//Giving information to our Node
