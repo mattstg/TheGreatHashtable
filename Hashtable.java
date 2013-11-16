@@ -1,6 +1,7 @@
 package TheGreatHashtable;
 
 import TheGreatHashtable.enums.Bounds;
+import TheGreatHashtable.enums.ENode;
 import TheGreatHashtable.enums.OverlapType;
 
 
@@ -56,8 +57,61 @@ public int Compare(int a, int b)
 }
 
 
+public void YAdder(Node OyList,Node AyList)
+{
+	Node Oit = OyList;
+	Node Ait = AyList;
 	
-public Node yMerge(Node O, Node A){	
+	while(true)
+	{
+		OverlapType compared = RetOverlap(OyList,AyList,true);
+		
+		if(compared == OverlapType.After)
+		{
+			//In this case, After has been called, which means A comes after O, so it through O
+			if(Oit.Ret(ENode.adj) == null)
+			{
+				AyList = AyList.Ret(ENode.adj);
+				Ait.ClearLink();
+				Oit.Set(Ait, ENode.adj);
+				return;		//Ait has been added
+			} else if (RetOverlap(Oit.Ret(ENode.adj),Ait,false) == OverlapType.Before){
+				
+				AyList = AyList.Ret(ENode.adj);
+				Ait.ClearLink();
+				Ait.Set(Oit.Ret(ENode.adj),ENode.adj);
+				Oit.Set(Ait, ENode.adj);
+				
+				
+					
+			}
+				
+			
+			
+			Oit = Oit.Ret(ENode.adj);
+		
+			//there is a chance we have reached the end of O, which means we should add the new A node here
+			
+		}
+		
+		if(compared == OverlapType.Before)
+		{
+			Oit.Set(Ait,ENode.adj);
+			Ait.Set(Oit,ENode.adj);
+			
+			
+		}
+	}
+	
+	
+	
+	
+	
+}
+
+
+	
+public Node yMerger(Node O, Node A){	
 	Node n = null;
 	switch(RetOverlap(O,A,true)){
 	case Right:
@@ -80,6 +134,7 @@ public Node yMerge(Node O, Node A){
 	default: 
 		System.out.print("Warning: Invalid input into ");
 	}
+
 	return O;
 }
 
