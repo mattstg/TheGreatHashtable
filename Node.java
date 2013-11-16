@@ -97,5 +97,13 @@ public class Node {
 		u = b;
 	}
 
+	public Node Adj(){
+		return adjNode;
+	}
+	
+	public void Adj(Node n){
+		adjNode = n;
+	}
+	
 	
 }
