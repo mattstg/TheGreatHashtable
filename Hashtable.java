@@ -11,7 +11,7 @@ public class Hashtable {
 	Node mainNode = null;
 	
 	//The overlap table
-	OverlapType[][] overlapTable = {{OverlapType.Right,OverlapType.BEA,OverlapType.BEA},{OverlapType.AEB,OverlapType.Equals,OverlapType.BEA},{OverlapType.AEB,OverlapType.AEB,OverlapType.Left}};
+	OverlapType[][] overlapTable = {{OverlapType.Right,OverlapType.AEO,OverlapType.AEO},{OverlapType.OEA,OverlapType.Equals,OverlapType.AEO},{OverlapType.OEA,OverlapType.OEA,OverlapType.Left}};
 	/*  compareTable
 	R   BeA  BeA 
 	AeB Eq   BeA
@@ -28,6 +28,7 @@ public Hashtable(){
 }
 	
 	
+//true connects 5-6, false would return Before
 public OverlapType RetOverlap(Node O,Node A, boolean tbool)
 {
 	int bool = (tbool) ? 1:0;
