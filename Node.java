@@ -14,14 +14,14 @@ public class Node {
 	
 	//Our Node's Constructors
 	public Node(int l, int u, Object x, Object y){ // node constructor.
-		Alt(l,u);
+		Set(l,u);
 		xNode = (Node) x;
 		yNode = (Node) y;
 	}
 	
 	//Getting information from our Node
 	public Object Ret(ENode a){ 
-		//Acq will return the value of of the upper bound (if given char 'u') or the lower bound (if given char 'l'). 
+		//Ret will return the value of of the upper bound (if given char 'u') or the lower bound (if given char 'l'). 
 		switch(a){
 			case y: 
 				return yNode; 
@@ -51,20 +51,20 @@ public class Node {
 	/*Alt() alters something about the node. There are several types of this method
 	 * which alters our node in different ways depending upon our input. */
 	
-	public void Alt(Object x, Object y){
+	public void Set(Object x, Object y){
 		//This type of our Alt method requires two nodes to be input, and both x&y Node
 		xNode = (Node) x;
 		yNode = (Node) y;
 	}
 	
-	public void Alt(Object x, char c){
+	public void Set(Object x, ENode c){
 		/* This type of our Alt method alters one of the Nodes, 
 		 depending on which char is input. */
 		switch(c){
-		case 'y': //alters the yNode
+		case y:
 			yNode = (Node) x; 
 			break;
-		case 'x': //alters the xNode
+		case x: 
 			xNode = (Node) x;
 			break;
 		default:
@@ -72,14 +72,14 @@ public class Node {
 		}
 	}
 
-	public void Alt(int a, char c){
+	public void Set(int a, Bounds c){
 		/* This type of our Alt method changed one of the bounds of the node, 
 		depending on which character is input. */
 		switch(c){
-		case 'u': //alters upper bound
+		case u: //alters upper bound
 			u = a;
 			break;
-		case 'l':  //alters lower bound
+		case l:  //alters lower bound
 			l = a;
 			break;
 		default: 
@@ -87,7 +87,7 @@ public class Node {
 		}
 	}
 	
-	public void Alt(int a, int b){
+	public void Set(int a, int b){
 		l = a;
 		u = b;
 	}
