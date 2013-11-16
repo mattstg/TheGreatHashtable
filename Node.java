@@ -1,11 +1,13 @@
 package TheGreatHashtable;
 
+import TheGreatHashtable.enums.Bounds;
+import TheGreatHashtable.enums.ENode;
+
 public class Node {
 	//Our Nodes Variables
 	int u; //upper bound
 	int l; //lower bound
-	public enum Bounds{'l','u'};
-	public enum Node{'x','y'};
+	
 	// yNode and xNode are the nodes which are "pointed to", or more appropriately birthed or stemming from this Node.
 	Node yNode = null; //the y node connection (if there is any)
 	Node xNode = null; //the x node connection		   '' 
@@ -18,26 +20,28 @@ public class Node {
 	}
 	
 	//Getting information from our Node
-	public Object Acq(enum Node){ 
+	public Object Ret(ENode a){ 
 		//Acq will return the value of of the upper bound (if given char 'u') or the lower bound (if given char 'l'). 
-		switch(Node){
-			case 'y': 
+		switch(a){
+			case y: 
 				return yNode; 
-			case 'x': 
+			case x: 
 				return xNode;
 		}
+		return null;
 	}
 	
-	public int Acq(enum Bounds){
-		switch(Bounds){
-			case 'u': 
+	public int Ret(Bounds a){
+		switch(a){
+			case u: 
 				return u;
-			case 'l';
+			case l:
 				return l;
 		}
+		return 0; 
 	}
 	
-	public int[] Acq(){
+	public int[] Ret(){
 		//returns the upper and lower bound in the form of an array of int[2]
 		int[] a = {l,u};
 		return a;
