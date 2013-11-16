@@ -57,7 +57,35 @@ public int Compare(int a, int b)
 
 
 	
-
+public Node yMerge(Node O, Node A){	
+	Node n = null;
+	switch(RetOverlap(O,A,true)){
+	case Right:
+		n.Set(O.Ret(Bounds.l),A.Ret(Bounds.u));
+		return n;
+	case Left:	
+		n.Set(A.Ret(Bounds.l),O.Ret(Bounds.u));
+		return n;
+	case Equals: 
+	case AEO:
+		//n.Set(O.Ret(Bounds.l),O.Ret(Bounds.u));
+		//return n;
+		O.Set(null, null);
+		return O;
+	case OEA:
+		//n.Set(A.Ret(Bounds.l),A.Ret(Bounds.u));
+		//return n;
+		A.Set(null, null);
+		return A;
+	default: 
+		System.out.print("Warning: Invalid input into ");
+	}
+	
+	
+	
+	
+	return o;
+}
 
 
 
