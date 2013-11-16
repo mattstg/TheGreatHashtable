@@ -1,3 +1,3 @@
 package TheGreatHashtable.enums;
 
-public enum OverlapType{Right,Left,AEB,BEA,Equals,Before,After};
+public enum OverlapType{Right,Left,OEA,AEO,Equals,Before,After};
