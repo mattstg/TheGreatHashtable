@@ -56,6 +56,16 @@ public int Compare(int a, int b)
 	return -1;
 }
 
+private Node _pop(Node node)
+{
+	if(node == null)
+		return null;
+	
+	Node toRet = node;
+	node.Adj(node.Adj());
+	return toRet;
+}
+
 
 public void YAdder(Node OyList,Node AyList)
 {
@@ -64,8 +74,27 @@ public void YAdder(Node OyList,Node AyList)
 	
 	while(true)
 	{
+		if(Oit == null)
+		{
+			Oit = _pop(AyList);
+			return; //ditto			
+			
+		}
+		
+		
 		OverlapType compared = RetOverlap(OyList,AyList,true);
 		
+		if(compared == OverlapType.Before)
+		{
+			AyList = AyList.Ret(ENode.adj);
+			Ait.ClearLink();
+			Ait.Set(Oit.Ret(ENode.adj),ENode.adj);
+			Oit.Set(Ait, ENode.adj);
+			return; //ditto	
+			
+		}
+		
+		 
 		if(compared == OverlapType.After)
 		{
 			//In this case, After has been called, which means A comes after O, so it through O
@@ -81,8 +110,7 @@ public void YAdder(Node OyList,Node AyList)
 				Ait.ClearLink();
 				Ait.Set(Oit.Ret(ENode.adj),ENode.adj);
 				Oit.Set(Ait, ENode.adj);
-				
-				
+				return; //ditto		
 					
 			}
 				
@@ -94,19 +122,11 @@ public void YAdder(Node OyList,Node AyList)
 			
 		}
 		
-		if(compared == OverlapType.Before)
-		{
-			Oit.Set(Ait,ENode.adj);
-			Ait.Set(Oit,ENode.adj);
-			
-			
-		}
-	}
-	
-	
-	
-	
-	
+		Node temp = Oit.Adj();
+		Oit = yMerger(Oit,Ait);
+		Oit.Adj(temp);	
+		
+	}	
 }
 
 
