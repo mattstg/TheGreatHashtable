@@ -13,14 +13,14 @@ public class Node {
 	Node adjNode = null; //the down node connection		   '' 
 	
 	//Our Node's Constructors
-	public Node(int l, int u, Object adj, Object dwn){ // node constructor.
+	public Node(int l, int u, Node adj, Node dwn){ // node constructor.
 		Set(l,u);
-		adjNode = (Node) adj;
-		dwnNode = (Node) dwn;
+		adjNode = adj;
+		dwnNode = dwn;
 	}
 	
 	//Getting information from our Node
-	public Object Ret(ENode a){ 
+	public Node Ret(ENode a){ 
 		//Ret will return the value of of the upper bound (if given char 'u') or the lower bound (if given char 'l'). 
 		switch(a){
 			case adj: 
@@ -51,21 +51,21 @@ public class Node {
 	/*Alt() alters something about the node. There are several types of this method
 	 * which alters our node in different ways depending upon our input. */
 	
-	public void Set(Object adj, Object dwn){
+	public void Set(Node adj, Node dwn){
 		//This type of our Alt method requires two nodes to be input, and both x&y Node
-		adjNode = (Node) adj;
-		dwnNode = (Node) dwn;
+		adjNode = adj;
+		dwnNode = dwn;
 	}
 	
-	public void Set(Object o, ENode c){
+	public void Set(Node o, ENode c){
 		/* This type of our Alt method alters one of the Nodes, 
 		 depending on which char is input. */
 		switch(c){
 		case dwn:
-			dwnNode = (Node) o; 
+			dwnNode = o; 
 			break;
 		case adj: 
-			adjNode = (Node) o;
+			adjNode = o;
 			break;
 		default:
 			System.out.print("Warning: improper entry into Node Alter Method. Node has not been altered.");
