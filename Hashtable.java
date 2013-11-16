@@ -70,21 +70,17 @@ public Node yMerge(Node O, Node A){
 	case AEO:
 		//n.Set(O.Ret(Bounds.l),O.Ret(Bounds.u));
 		//return n;
-		O.Set(null, null);
+		O.ClearLink();
 		return O;
 	case OEA:
 		//n.Set(A.Ret(Bounds.l),A.Ret(Bounds.u));
 		//return n;
-		A.Set(null, null);
+		A.ClearLink();
 		return A;
 	default: 
 		System.out.print("Warning: Invalid input into ");
 	}
-	
-	
-	
-	
-	return o;
+	return O;
 }
 
 

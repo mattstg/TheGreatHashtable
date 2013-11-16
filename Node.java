@@ -51,6 +51,11 @@ public class Node {
 	/*Alt() alters something about the node. There are several types of this method
 	 * which alters our node in different ways depending upon our input. */
 	
+	public void ClearLink(){
+		adjNode = null;
+		dwnNode = null;
+	}
+	
 	public void Set(Node adj, Node dwn){
 		//This type of our Alt method requires two nodes to be input, and both x&y Node
 		adjNode = adj;
