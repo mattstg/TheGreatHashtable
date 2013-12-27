@@ -22,6 +22,10 @@ public class S_Box {
 			
 		}
 		
+		public String toString(){
+			return "loc: " + loc.toString() + " size: " + size.toString();
+		}
+		
 	}
 
 
