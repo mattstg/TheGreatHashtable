@@ -126,27 +126,26 @@ public class DiagMotion { //diagonal motion
 		
 		System.out.println("counter: " + counter + "CdR: " + CdR);
 		
-		if(Rem != 0){
-			if((double)counter > CdR){
-				if(x==t){
-					if(y>0){
-						i.loc.y += 1;
-						PMove(0,1);
-					}else{
-						i.size.y += 1;
-						PMove(0,-1);
-					}
+		
+		if((double)counter >= CdR && Rem!=0 && CdR != 0){
+			if(x==t){
+				if(y>0){
+					i.loc.y += 1;
+					PMove(0,1);
 				}else{
-					if(x>0){
-						i.size.x += 1;
-						PMove(1,0);
-					}else{
-						i.loc.x += 1;
-						PMove(-1,0);
-					}
+					i.size.y += 1;
+					PMove(0,-1);
 				}
-				CdR += dR;
+			}else{
+				if(x>0){
+					i.size.x += 1;
+					PMove(1,0);
+				}else{
+					i.loc.x += 1;
+					PMove(-1,0);
+				}
 			}
+			CdR += dR;
 		}
 		counter++;
 		return i;
