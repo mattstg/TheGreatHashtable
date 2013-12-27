@@ -11,7 +11,7 @@ public class TestDiagMotionDriver {
 		S_Box ColBox;
 		
 		S_Box w = s.RetNextBox();
-		
+		System.out.println(s.toString());
 		System.out.println("Entity moving attributes: " + s.E.toString());
 		System.out.println("box to be checked for collision: " + w.toString());
 		

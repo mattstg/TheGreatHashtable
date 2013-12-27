@@ -124,9 +124,6 @@ public class DiagMotion { //diagonal motion
 		}
 		S_Box i = VelToBox();
 		
-		System.out.println("counter: " + counter + "CdR: " + CdR);
-		
-		
 		if((double)counter >= CdR && Rem!=0 && CdR != 0){
 			if(x==t){
 				if(y>0){
