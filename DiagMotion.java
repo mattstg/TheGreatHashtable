@@ -26,7 +26,11 @@ public class DiagMotion { //diagonal motion
 			dR = 0;
 		}
 		CdR = dR/2;
-		t = (Math.abs(x)>Math.abs(y)) ? Math.abs(y) : Math.abs(x);
+		if(x == 0 || y==0){
+			t = (Math.abs(x)>Math.abs(y)) ? Math.abs(x) : Math.abs(y);
+		}else{
+			t = (Math.abs(x)>Math.abs(y)) ? Math.abs(y) : Math.abs(x);
+		}
 	}
 	public DiagMotion(){ 
 		x = 1;
@@ -116,15 +120,21 @@ public class DiagMotion { //diagonal motion
 	}
 
 	public S_Box RetNextBox(){
-		if(counter > t){
+		System.out.println("doing while(counter >= t)     counter :" + counter + " t: " + t);
+		if((counter-1) >= t && counter != 0){
 			return null;
 		}
 		if(counter != 0){
 			PMove();
+			System.out.println("E has been moved to: " + E.toString());
+		}else{
+			System.out.println("counter == 0. Not moving E.");
 		}
+		
 		S_Box i = VelToBox();
 		
 		if((double)counter >= CdR && Rem!=0 && CdR != 0){
+			System.out.println("Special case has occured. Moving E additionally...");
 			if(x==t){
 				if(y>0){
 					i.loc.y += 1;
@@ -142,9 +152,10 @@ public class DiagMotion { //diagonal motion
 					PMove(-1,0);
 				}
 			}
+			System.out.println("E has been moved to: " + E.toString());
 			CdR += dR;
 		}
-		counter++;
+		counter += 1;
 		return i;
 	}
 
