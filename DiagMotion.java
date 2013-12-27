@@ -3,7 +3,7 @@ import TheGreatHashtable.enums.*;
 
 public class DiagMotion { //diagonal motion
 		private int x,y;
-		private S_Box E;
+		S_Box E;
 		int counter = 0;
 		int Rem;
 		double dR;
