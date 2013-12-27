@@ -15,4 +15,8 @@ public class S_XY {
 		y = copyMe.y;		
 	}
 	
+	public String toString(){
+		return "x: " + x + " y: " + y;
+	}
+	
 }
