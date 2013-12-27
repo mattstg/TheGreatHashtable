@@ -120,21 +120,21 @@ public class DiagMotion { //diagonal motion
 	}
 
 	public S_Box RetNextBox(){
-		System.out.println("doing while(counter >= t)     counter :" + counter + " t: " + t);
+		//System.out.println("doing while(counter >= t)     counter :" + counter + " t: " + t);
 		if((counter-1) >= t && counter != 0){
 			return null;
 		}
 		if(counter != 0){
 			PMove();
-			System.out.println("E has been moved to: " + E.toString());
+			//System.out.println("E has been moved to: " + E.toString());
 		}else{
-			System.out.println("counter == 0. Not moving E.");
+			//System.out.println("counter == 0. Not moving E.");
 		}
 		
 		S_Box i = VelToBox();
 		
 		if((double)counter >= CdR && Rem!=0 && CdR != 0){
-			System.out.println("Special case has occured. Moving E additionally...");
+			//System.out.println("Special case has occured. Moving E additionally...");
 			if(x==t){
 				if(y>0){
 					i.loc.y += 1;
@@ -152,7 +152,7 @@ public class DiagMotion { //diagonal motion
 					PMove(-1,0);
 				}
 			}
-			System.out.println("E has been moved to: " + E.toString());
+			//System.out.println("E has been moved to: " + E.toString());
 			CdR += dR;
 		}
 		counter += 1;
