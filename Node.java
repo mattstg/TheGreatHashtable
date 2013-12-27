@@ -19,6 +19,13 @@ public class Node {
 		dwnNode = dwn;
 	}
 	
+	public String toString()	{
+		return " L: " + l + " U: " + u + " adjNode: " + (adjNode != null) + " dwnNode: " + (dwnNode != null);
+		
+		
+	}
+	
+	
 	//Getting information from our Node
 	public Node Ret(ENode a){ 
 		//Ret will return the value of of the upper bound (if given char 'u') or the lower bound (if given char 'l'). 
@@ -97,6 +104,14 @@ public class Node {
 		u = b;
 	}
 
+	public Node Dwn(){
+		return dwnNode;
+	}
+	
+	public void Dwn(Node n){
+		dwnNode = n;
+	}
+	
 	public Node Adj(){
 		return adjNode;
 	}
