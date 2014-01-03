@@ -299,7 +299,9 @@ private void YMerger(Node Ox, Node Ax)
 			Node newNode = new Node(A,true);
 			OLast.Adj(newNode);
 			A = A.Adj();
-			OLast = newNode;	
+			MergeNeighbour(OLast);
+			O = OLast.Adj();	
+			
 			
 		}
 	
