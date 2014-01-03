@@ -108,7 +108,7 @@ public boolean Coli(S_Box box)
 	
 	Node nodeY = new Node(box.loc.y-box.size.y+1,box.loc.y,null,null);
 	Node nodeX = new Node(box.loc.x,box.loc.x+box.size.x-1,null,nodeY);
-	////System.Out.println("The NodeY: " + '\n' + nodeY.toString() + '\n' + "The NodeX: " + '\n' +  nodeX.Dwn().toString());
+	//////System.Out.println("The NodeY: " + '\n' + nodeY.toString() + '\n' + "The NodeX: " + '\n' +  nodeX.Dwn().toString());
 	//now have a tree for box 
 	
 	
@@ -124,8 +124,8 @@ private boolean Coli(Node hashTree)  //WORKS UNDER ASSUMPTION THAT hashTree CONT
 	
 	while(mainITX != null)
 	{
-		////System.Out.println("main" + mainITX.toString());
-		////System.Out.println("hashTree" + hashTree.toString());
+		//////System.Out.println("main" + mainITX.toString());
+		//////System.Out.println("hashTree" + hashTree.toString());
 		
 		
 		if(Coli(mainITX,hashTree)) //if coli in x
@@ -136,12 +136,12 @@ private boolean Coli(Node hashTree)  //WORKS UNDER ASSUMPTION THAT hashTree CONT
 			
 			while(mainITY != null)
 			{
-				////System.Out.println("hashTree.dwn" + hashTree.Dwn().toString());
-				////System.Out.println("main.y" + mainITY.toString());
+				//////System.Out.println("hashTree.dwn" + hashTree.Dwn().toString());
+				//////System.Out.println("main.y" + mainITY.toString());
 				
 				if(Coli(mainITY,hashTree.Dwn())) //if a coli occurs between the y from local hash and y from given tree			
 				{
-					////System.Out.println("The main: " + '\n' + mainITY.toString() + '\n' + "Moving object: " + '\n' +  hashTree.Dwn().toString());
+					//////System.Out.println("The main: " + '\n' + mainITY.toString() + '\n' + "Moving object: " + '\n' +  hashTree.Dwn().toString());
 					return true;//A coli has occured, this means there is a colision between these two trees
 				}					
 				else				
@@ -230,24 +230,24 @@ private void YMerger(Node Ox, Node Ax)
 	Node O = Ox.Dwn();
 	Node A = Ax.Dwn();
 	Node OLast = null;
-	////System.Out.println("Enter YMerger");
+	//////System.Out.println("Enter YMerger");
 
 		while(O != null && A != null)
 		{
 			
 			OverlapType compared = RetOverlap(O,A,false);	
-			////System.Out.println("Start YMergerLoop");
+			//////System.Out.println("Start YMergerLoop");
 			
 			switch(compared)
 			{
 			case Equals: 
 				//If identical, no need to merge, increase A
-				////System.Out.println("YMerger: Equals");
+				//////System.Out.println("YMerger: Equals");
 				A = A.Adj();				
 				break;
 				
 			case Before:
-				////System.Out.println("YMerger: Before");
+				//////System.Out.println("YMerger: Before");
 				//Should be taken care of already in after below, unless it is the first one
 				if(O == Ox.Dwn())
 				{
@@ -260,12 +260,12 @@ private void YMerger(Node Ox, Node Ax)
 				break;
 				
 			case After:
-				//System.Out.println("YMerger: After");		
+				////System.Out.println("YMerger: After");		
 				if(O.Adj() != null)
 				{
 					if(RetOverlap(O.Adj(),A,false) == OverlapType.Before)
 					{
-						//System.Out.println("YMerge: After-MergeNeghb");
+						////System.Out.println("YMerge: After-MergeNeghb");
 						//then insert
 						Node newNode = new Node(A,false); //non full copy of node (no dwn should exist)
 						newNode.Adj(O.Adj());  //new node sets its adj to the it's
@@ -321,7 +321,7 @@ private void MergeNeighbour(Node O)
 		{
 			
 			OverlapType c = RetOverlap(O,O.Adj(),true);
-			////System.Out.println(O.toString() + '\n' + O.Adj().toString() + "  " + c);
+			//////System.Out.println(O.toString() + '\n' + O.Adj().toString() + "  " + c);
 			if(c != OverlapType.Before && c != OverlapType.After) //should never be after, but just to be sure
 			{
 				//needs to be merged with neighbor
@@ -333,7 +333,7 @@ private void MergeNeighbour(Node O)
 				
 			}
 		}
-		//System.Out.println("DEBUG TEST: " + '\n' + this.ToString() + '\n');
+		////System.Out.println("DEBUG TEST: " + '\n' + this.ToString() + '\n');
 	}
 	
 	
@@ -357,8 +357,8 @@ public void HashAdder(Node A)
 			
 			OverlapType compared = RetOverlap(Oit,A,false);	
 			
-			System.out.println(A.toString());
-			System.out.println(compared);
+			//System.out.println(A.toString());
+			//System.out.println(compared);
 			//try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
 			
 			
@@ -366,8 +366,8 @@ public void HashAdder(Node A)
 			{
 			case Equals: 
 				
-				//System.Out.println("Before Equal:");
-				//System.Out.println(ToString());					
+				////System.Out.println("Before Equal:");
+				////System.Out.println(ToString());					
 				//good case, do Y ADDER
 				YMerger(Oit,A); //merge the Ys of A into Oit
 					
@@ -395,27 +395,27 @@ public void HashAdder(Node A)
 					A = A.Adj();					
 				} else {
 					//an A was created to the Before via Left or AEO
-					//System.out.println("Step1, whats coming in:" + A.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					////System.out.println("Step1, whats coming in:" + A.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 					
 					Node newNode = new Node(A,true);
 					newNode.Adj(Oit);
-					//System.out.println("NewNode:" + newNode.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-					//System.out.println("Its new ADJ:" + Oit.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					////System.out.println("NewNode:" + newNode.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					////System.out.println("Its new ADJ:" + Oit.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 					OLast.Adj(newNode);
-					//System.out.println("OLast Adj adding newNode:" + OLast.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					////System.out.println("OLast Adj adding newNode:" + OLast.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 					A = A.Adj();
 					Oit = newNode;
 					
-					/*//System.out.println("Adj: " + A.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					/*////System.out.println("Adj: " + A.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 
-					//System.out.println('\n' + "Final Test:");
+					////System.out.println('\n' + "Final Test:");
 					Node t = mainNode;
 					while(t != null)
 					{
-						//System.out.println('\n' + t.toString());
+						////System.out.println('\n' + t.toString());
 						t = t.Adj();						
 					}
-					//System.out.println("END RESULT: " + '\n' + '\n');try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					////System.out.println("END RESULT: " + '\n' + '\n');try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 */
 				}
 				
@@ -563,7 +563,7 @@ public Node yMerger(Node O, Node A){
 		A.ClearLink();
 		return A;
 	default: 
-		//System.Out.print("Warning: Invalid input into ");
+		////System.Out.print("Warning: Invalid input into ");
 	}
 
 	return O;
