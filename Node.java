@@ -19,6 +19,36 @@ public class Node {
 		dwnNode = dwn;
 	}
 	
+	public Node(int l, int u, Node toCopy){ // node constructor.
+		Set(l,u);
+		adjNode = null;
+		copyList(toCopy.Dwn());
+	}
+	
+	public Node(Node toCopy){ // node constructor.
+		Set(toCopy.Ret(Bounds.l),toCopy.Ret(Bounds.u));
+		adjNode = null;
+		dwnNode = null;
+	}
+	
+	public Node(Node toCopy, boolean fullCopy){ // node constructor.
+		if(fullCopy)
+		{
+			adjNode = null;
+			Set(toCopy.Ret(Bounds.l),toCopy.Ret(Bounds.u));
+			copyList(toCopy.Dwn());
+		} else {
+			Set(toCopy.Ret(Bounds.l),toCopy.Ret(Bounds.u));
+			adjNode = null;
+			dwnNode = null;
+		}
+		
+		
+		
+	}
+	
+	
+	
 	public String toString()	{
 		return " L: " + l + " U: " + u + " adjNode: " + (adjNode != null) + " dwnNode: " + (dwnNode != null);
 		
@@ -46,6 +76,42 @@ public class Node {
 				return l;
 		}
 		return 0; 
+	}
+	
+	
+	public boolean EqualBounds(Node a)
+	{
+		//compare if bounds are equal
+		if(l == a.Ret(Bounds.l) && u == a.Ret(Bounds.u))
+			return true;
+		return false;
+		
+	}
+	
+	private void copyList(Node O)
+	{
+		//O is the orginal node passed to be copied
+		if(O != null)
+		{
+			
+			Dwn(new Node(O,false)); //set the dwn node to be the first node
+			Node it = this.dwnNode; //pointing at the new dwnNode
+			
+			
+			if(O != null)
+				O = O.Adj(); //use O as the iterator for the original list
+			
+			while(O != null)
+			{
+				Node newNode = new Node(O,false);
+				it.Adj(newNode);
+				O = O.Adj(); //cycle to next node to be copied
+				it = it.Adj(); //cycle to next node to place
+			}
+		} else {
+			Dwn(null);
+		}
+		
 	}
 	
 	public int[] Ret(){

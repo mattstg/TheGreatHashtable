@@ -25,7 +25,31 @@ public Hashtable(Node hashTreeHead){
 public Hashtable(){
 	mainNode = null;
 }
+
+
+public String ToString()
+{
+	String toRet = "";
+	Node it = mainNode;
+	while(it != null)
+	{
+		
+		Node yit = it.Dwn();
+		toRet += it.toString();
+		toRet += '\n';
+		
+		while(yit != null)
+		{
+			toRet += "   " + yit.toString() + '\n';
+			yit = yit.Adj();
+			
+		}
+		it = it.Adj();
+				
+	}
 	
+	return toRet;
+}
 	
 //true connects 5-6, false would return Before
 public OverlapType RetOverlap(Node O,Node A, boolean tbool)
@@ -60,7 +84,9 @@ private Node _pop(Node node)
 		return null;
 	
 	Node toRet = node;
-	node.Adj(node.Adj()); //why did i do this?
+	node = node.Adj(); //points to next node
+	toRet.ClearLink(); //isolate the toRet node
+	
 	return toRet;
 }
 
@@ -82,7 +108,7 @@ public boolean Coli(S_Box box)
 	
 	Node nodeY = new Node(box.loc.y-box.size.y+1,box.loc.y,null,null);
 	Node nodeX = new Node(box.loc.x,box.loc.x+box.size.x-1,null,nodeY);
-	
+	////System.Out.println("The NodeY: " + '\n' + nodeY.toString() + '\n' + "The NodeX: " + '\n' +  nodeX.Dwn().toString());
 	//now have a tree for box 
 	
 	
@@ -98,8 +124,8 @@ private boolean Coli(Node hashTree)  //WORKS UNDER ASSUMPTION THAT hashTree CONT
 	
 	while(mainITX != null)
 	{
-		//System.out.println("main" + mainITX.toString());
-		//System.out.println("hashTree" + hashTree.toString());
+		////System.Out.println("main" + mainITX.toString());
+		////System.Out.println("hashTree" + hashTree.toString());
 		
 		
 		if(Coli(mainITX,hashTree)) //if coli in x
@@ -110,12 +136,12 @@ private boolean Coli(Node hashTree)  //WORKS UNDER ASSUMPTION THAT hashTree CONT
 			
 			while(mainITY != null)
 			{
-				//System.out.println("hashTree.dwn" + hashTree.Dwn().toString());
-				//System.out.println("main.y" + mainITY.toString());
+				////System.Out.println("hashTree.dwn" + hashTree.Dwn().toString());
+				////System.Out.println("main.y" + mainITY.toString());
 				
 				if(Coli(mainITY,hashTree.Dwn())) //if a coli occurs between the y from local hash and y from given tree			
 				{
-					//System.out.println("The main: " + '\n' + mainITY.toString() + '\n' + "Moving object: " + '\n' +  hashTree.Dwn().toString());
+					////System.Out.println("The main: " + '\n' + mainITY.toString() + '\n' + "Moving object: " + '\n' +  hashTree.Dwn().toString());
 					return true;//A coli has occured, this means there is a colision between these two trees
 				}					
 				else				
@@ -131,7 +157,7 @@ private boolean Coli(Node hashTree)  //WORKS UNDER ASSUMPTION THAT hashTree CONT
 	
 }
 
-
+/*
 public void YAdder(Node OyList,Node AyList)
 {
 	Node Oit = OyList;
@@ -193,9 +219,327 @@ public void YAdder(Node OyList,Node AyList)
 		
 	}	
 }
+*/
 
-
+private void YMerger(Node Ox, Node Ax)
+{
 	
+	
+	
+	//Given the two higher scopes to be combined
+	Node O = Ox.Dwn();
+	Node A = Ax.Dwn();
+	Node OLast = null;
+	////System.Out.println("Enter YMerger");
+
+		while(O != null && A != null)
+		{
+			
+			OverlapType compared = RetOverlap(O,A,false);	
+			////System.Out.println("Start YMergerLoop");
+			
+			switch(compared)
+			{
+			case Equals: 
+				//If identical, no need to merge, increase A
+				////System.Out.println("YMerger: Equals");
+				A = A.Adj();				
+				break;
+				
+			case Before:
+				////System.Out.println("YMerger: Before");
+				//Should be taken care of already in after below, unless it is the first one
+				if(O == Ox.Dwn())
+				{
+					Node newNode = new Node(A,false); //full copy new node
+					newNode.Adj(Ox.Dwn());  //new node sets its adj to the it's
+					Ox.Dwn(newNode);
+					A = A.Adj();
+					
+				}
+				break;
+				
+			case After:
+				//System.Out.println("YMerger: After");		
+				if(O.Adj() != null)
+				{
+					if(RetOverlap(O.Adj(),A,false) == OverlapType.Before)
+					{
+						//System.Out.println("YMerge: After-MergeNeghb");
+						//then insert
+						Node newNode = new Node(A,false); //non full copy of node (no dwn should exist)
+						newNode.Adj(O.Adj());  //new node sets its adj to the it's
+						O.Adj(newNode);	
+						A = A.Adj(); //iterate the A
+						MergeNeighbour(O);
+					}	
+				} else {
+					OLast = O; //save last for second loop
+				}
+				
+				O = O.Adj();
+				break;
+				
+			case Right:		
+			case Left:			
+			case AEO:				
+			case OEA:		
+				
+				_MergeNodes(O,A);
+				A = A.Adj();				
+				MergeNeighbour(O); //merge with neighbours possibly
+				break;
+				
+			}
+			
+		}
+		
+		while(A != null) //if its in here, its because Oit reached null, so just add the rest of the A in
+		{
+			Node newNode = new Node(A,true);
+			OLast.Adj(newNode);
+			A = A.Adj();
+			OLast = newNode;	
+			
+		}
+	
+	
+}
+
+
+private void MergeNeighbour(Node O)
+{
+	//after insertion of LOWEST scope possible, check to merge with neighbours
+	
+	boolean mergeNeighbour = true;
+	while(mergeNeighbour)
+	{
+		mergeNeighbour = false;
+		if(O.Adj() != null)
+		{
+			
+			OverlapType c = RetOverlap(O,O.Adj(),true);
+			////System.Out.println(O.toString() + '\n' + O.Adj().toString() + "  " + c);
+			if(c != OverlapType.Before && c != OverlapType.After) //should never be after, but just to be sure
+			{
+				//needs to be merged with neighbor
+				mergeNeighbour = true;
+				_MergeNodes(O,O.Adj());
+				Node toDel = O.Adj();
+				O.Adj(O.Adj().Adj());
+				toDel.ClearLink(); //clear links so will be deleted				
+				
+			}
+		}
+		//System.Out.println("DEBUG TEST: " + '\n' + this.ToString() + '\n');
+	}
+	
+	
+}
+
+public void HashAdder(Node A)
+{
+	//given another hashTable head A, add to current hashtable
+	Node Oit = this.mainNode;
+	Node OLast = this.mainNode;
+	
+	
+	
+	//Scope 1 (X)
+	
+		while(Oit != null && A != null)
+		{
+			
+			
+			
+			
+			OverlapType compared = RetOverlap(Oit,A,false);	
+			
+			System.out.println(A.toString());
+			System.out.println(compared);
+			//try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+			
+			
+			switch(compared)
+			{
+			case Equals: 
+				
+				//System.Out.println("Before Equal:");
+				//System.Out.println(ToString());					
+				//good case, do Y ADDER
+				YMerger(Oit,A); //merge the Ys of A into Oit
+					
+				
+				Oit = Oit.Adj();
+				if(OLast.Adj() != Oit)
+					OLast = OLast.Adj(); //increase the trail it
+				A = A.Adj();
+				
+				
+				
+				
+				
+				break;
+				
+			case Before:
+				
+				//Should be taken care of already in after below, unless is first case
+				if(Oit == this.mainNode)
+				{					
+					Node newNode = new Node(A,true); //full copy new node
+					newNode.Adj(this.mainNode);  //new node sets its adj to the it's
+					this.mainNode = newNode;
+					Oit = this.mainNode;
+					A = A.Adj();					
+				} else {
+					//an A was created to the Before via Left or AEO
+					//System.out.println("Step1, whats coming in:" + A.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					
+					Node newNode = new Node(A,true);
+					newNode.Adj(Oit);
+					//System.out.println("NewNode:" + newNode.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					//System.out.println("Its new ADJ:" + Oit.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					OLast.Adj(newNode);
+					//System.out.println("OLast Adj adding newNode:" + OLast.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					A = A.Adj();
+					Oit = newNode;
+					
+					/*//System.out.println("Adj: " + A.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+
+					//System.out.println('\n' + "Final Test:");
+					Node t = mainNode;
+					while(t != null)
+					{
+						//System.out.println('\n' + t.toString());
+						t = t.Adj();						
+					}
+					//System.out.println("END RESULT: " + '\n' + '\n');try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+*/
+				}
+				
+				break;
+				
+			case After:
+				
+				
+				if(Oit.Adj() != null)
+					if(RetOverlap(Oit.Adj(),A,false) == OverlapType.Before)
+					{
+						
+						//then insert
+						Node newNode = new Node(A,true); //full copy new node
+						newNode.Adj(Oit.Adj());  //new node sets its adj to the it's
+						Oit.Adj(newNode);	
+						A = A.Adj(); //iterate the A
+					}					
+				Oit = Oit.Adj();
+				if(OLast.Adj() != Oit)
+					OLast = OLast.Adj(); //increase the trail it
+				break;
+				
+			case Right:		
+			case Left:	
+				_OverlapSplitter(Oit,A);
+				break;
+				
+			case OEA:	
+				_SubsetSplitter(A,Oit);
+				break;
+				
+			case AEO:			
+				_SubsetSplitter(Oit,A);
+				break;
+				
+			}
+
+			
+		
+		}
+		
+		
+		while(A != null) //if its in here, its because Oit reached null, so just add the rest of the A in
+		{
+			Node newNode = new Node(A,true);
+			OLast.Adj(newNode);
+			A = A.Adj();
+			OLast = newNode;
+			
+			
+			
+			
+			
+			
+		}
+	
+		
+		_FinalXMerger();
+	
+}
+
+private void _FinalXMerger()
+{
+	//iterates through the list and checks if adj X are identical and merges them
+	Node it = this.mainNode;
+	if(it == null)
+		return;
+	Node itt = it.Adj();
+	if(itt == null)
+		return;
+	
+	Node xit;
+	Node xitt;
+	
+	
+	
+	while(it != null && itt != null)
+	{
+		boolean valid = true;
+		if(it.Ret(Bounds.u) == itt.Ret(Bounds.l)-1)
+		{
+			//if connected side by side 3-4 ex
+			xit = it.Dwn();  //should not be null
+			xitt = itt.Dwn();//should not be null
+			
+			
+			while(valid)
+			{		
+				if(xit == null || xitt == null)
+				{
+					valid = false;				
+				} else {
+					if(xit.EqualBounds(xitt))
+					{
+						//good, iterate to the enxt
+						xit = xit.Adj();
+						xitt = xitt.Adj();
+					} else {
+						valid = false;
+					}
+				
+				}			
+				
+			}
+			
+			if(xit == null && xitt == null) //this should only occur when they exit simotanouesly through all
+			{
+				it.Adj(itt.Adj()); //overwrite the one in front since its identical
+				it.Set(itt.Ret(Bounds.l),Bounds.u);			
+			}
+			
+			
+			
+		}
+		it = it.Adj();
+		itt = itt.Adj();
+	}
+	
+		
+	
+	
+	
+}
+	
+/*
 public Node yMerger(Node O, Node A){	
 	Node n = null;
 	switch(RetOverlap(O,A,true)){
@@ -217,15 +561,117 @@ public Node yMerger(Node O, Node A){
 		A.ClearLink();
 		return A;
 	default: 
-		System.out.print("Warning: Invalid input into ");
+		//System.Out.print("Warning: Invalid input into ");
 	}
 
 	return O;
 }
+*/
+
+public void NodeSplitter(Node ONode, Node ANode)
+{
+	OverlapType compared = RetOverlap(ONode,ANode,false);
+	switch(compared)
+	{
+	case Equals:
+		break; //no split needed
+	case OEA:
+		
+	
+	
+	
+	
+	}
+	
+}
 
 
+//Possible Refactor
+private void _SubsetSplitter(Node a, Node b)
+{
+	
+	//Node B is a subset of node A. A will be the one that always splits
+			//Node newNode()
+		if(a.Ret(Bounds.l) == b.Ret(Bounds.l))
+		{ //lb are equal, splits into two
+			
+			Node oldAdjPtr = a.Adj();
+			Node newNode = new Node(b.Ret(Bounds.u)+1,a.Ret(Bounds.u),a);
+			a.Adj(newNode);
+			newNode.Adj(oldAdjPtr);
+			a.Set(b.Ret(Bounds.u), Bounds.u);			
+			
+		} else if(a.Ret(Bounds.u) == b.Ret(Bounds.u)) {
+			
+			Node oldAdjPtr = a.Adj();
+			Node newNode = new Node(b.Ret(Bounds.l),a.Ret(Bounds.u),a);
+			a.Adj(newNode);
+			newNode.Adj(oldAdjPtr);
+			a.Set(b.Ret(Bounds.l) - 1, Bounds.u);
+		
+		} else {
+			
+			//split into 3
+			Node oldAdjPtr = a.Adj();
+			Node newNode = new Node(b.Ret(Bounds.l),a.Ret(Bounds.u),a);
+			a.Adj(newNode);
+			newNode.Adj(oldAdjPtr);
+			a.Set(b.Ret(Bounds.l) - 1, Bounds.u);
+			_SubsetSplitter(a.Adj(),b);
+		}	
+		
+	
+}
 
 
+//REFACTOR  I think the cases where the bounds match is useless since that is technically a subset, please refactor
+public void _OverlapSplitter(Node center, Node overlap)
+{
+		
+	
+	//center node will not be split, overlap one will be
+	if(overlap.Ret(Bounds.l) < center.Ret(Bounds.l))
+	{
+		//overlap is to the left, break apart overlap
+		Node oldAdjPtr = overlap.Adj();
+		Node newNode = new Node(center.Ret(Bounds.l),overlap.Ret(Bounds.u),overlap);
+		overlap.Adj(newNode);
+		newNode.Adj(oldAdjPtr);
+		overlap.Set(center.Ret(Bounds.l) - 1, Bounds.u);
+	} else {
+		
+		Node oldAdjPtr = overlap.Adj();
+		Node newNode = new Node(center.Ret(Bounds.u)+1,overlap.Ret(Bounds.u),overlap);
+		overlap.Adj(newNode);
+		newNode.Adj(oldAdjPtr);
+		overlap.Set(center.Ret(Bounds.u), Bounds.u);
+		
+	}
+	
+	
+	
+}
+
+private void _MergeNodes(Node O, Node A)
+{
+	//given two nodes, will merge A into node O, O will be modded, not A
+	int lb;
+	int ub;
+	
+	if(O.Ret(Bounds.l) <= A.Ret(Bounds.l))
+		lb = O.Ret(Bounds.l);
+	else
+		lb = A.Ret(Bounds.l);
+	
+	if(O.Ret(Bounds.u) >= A.Ret(Bounds.u))
+		ub = O.Ret(Bounds.u);
+	else
+		ub = A.Ret(Bounds.u);
+	
+	O.Set(lb, ub);
+	
+	
+}
 
 	
 	
