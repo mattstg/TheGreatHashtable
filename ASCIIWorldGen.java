@@ -4,30 +4,29 @@ import TheGreatHashtable.enums.*;
 
 public class ASCIIWorldGen {
 
-	final int SIZEX = 50;
-	final int SIZEY = 25;
-	char[][] world = new char[SIZEX][SIZEY];
+	
+	char[][] world = new char[Constants.WORLD_SIZE_X][Constants.WORLD_SIZE_Y];
 	
 	public ASCIIWorldGen(){
-		for(int x= 0; x < SIZEX; x++)
-			for(int y= 0; y < SIZEY; y++)
+		for(int x= 0; x < Constants.WORLD_SIZE_X; x++)
+			for(int y= 0; y < Constants.WORLD_SIZE_Y; y++)
 				world[x][y] = '*';
 		
 	}
 	
 	public void ResetWorld()
 	{
-		for(int x= 0; x < SIZEX; x++)
-			for(int y= 0; y < SIZEY; y++)
+		for(int x= 0; x < Constants.WORLD_SIZE_X; x++)
+			for(int y= 0; y < Constants.WORLD_SIZE_Y; y++)
 				world[x][y] = '*';
 	}
 	
 	public String DrawWorld()
 	{
 		String toRet = "";
-		for(int y= 0; y < SIZEY; y++)
+		for(int y= 0; y < Constants.WORLD_SIZE_Y; y++)
 		{
-			for(int x = 0; x < SIZEX; x++)
+			for(int x = 0; x < Constants.WORLD_SIZE_X; x++)
 			{
 				toRet += world[x][y];				
 			}

@@ -13,6 +13,8 @@ public class Node {
 	Node adjNode = null; //the down node connection		   '' 
 	
 	//Our Node's Constructors
+	public Node(){} //useful for creating dud nodes to make compiler happy
+	
 	public Node(int l, int u, Node adj, Node dwn){ // node constructor.
 		Set(l,u);
 		adjNode = adj;
