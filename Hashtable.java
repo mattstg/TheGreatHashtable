@@ -27,6 +27,12 @@ public Hashtable(){
 }
 
 
+public Node RetMainNode()  //Delete this function later, mainNode should stay in hashtable to avoid security/consistency issues
+{
+	return mainNode;
+}
+
+
 public String ToString()
 {
 	String toRet = "";
@@ -157,69 +163,7 @@ private boolean Coli(Node hashTree)  //WORKS UNDER ASSUMPTION THAT hashTree CONT
 	
 }
 
-/*
-public void YAdder(Node OyList,Node AyList)
-{
-	Node Oit = OyList;
-	Node Ait = AyList;
-	
-	while(true)
-	{
-		if(Oit == null)
-		{
-			Oit = _pop(AyList);
-			return; //ditto			
-			
-		}
-		
-		
-		OverlapType compared = RetOverlap(OyList,AyList,true);
-		
-		if(compared == OverlapType.Before)
-		{
-			AyList = AyList.Ret(ENode.adj);
-			Ait.ClearLink();
-			Ait.Set(Oit.Ret(ENode.adj),ENode.adj);
-			Oit.Set(Ait, ENode.adj);
-			return; //ditto	
-			
-		}
-		
-		 
-		if(compared == OverlapType.After)
-		{
-			//In this case, After has been called, which means A comes after O, so it through O
-			if(Oit.Ret(ENode.adj) == null)
-			{
-				AyList = AyList.Ret(ENode.adj);
-				Ait.ClearLink();
-				Oit.Set(Ait, ENode.adj);
-				return;		//Ait has been added
-			} else if (RetOverlap(Oit.Ret(ENode.adj),Ait,false) == OverlapType.Before){
-				
-				AyList = AyList.Ret(ENode.adj);
-				Ait.ClearLink();
-				Ait.Set(Oit.Ret(ENode.adj),ENode.adj);
-				Oit.Set(Ait, ENode.adj);
-				return; //ditto		
-					
-			}
-				
-			
-			
-			Oit = Oit.Ret(ENode.adj);
-		
-			//there is a chance we have reached the end of O, which means we should add the new A node here
-			
-		}
-		
-		Node temp = Oit.Adj();
-		Oit = yMerger(Oit,Ait);
-		Oit.Adj(temp);	
-		
-	}	
-}
-*/
+
 
 private void YMerger(Node Ox, Node Ax)
 {
@@ -251,7 +195,7 @@ private void YMerger(Node Ox, Node Ax)
 				//Should be taken care of already in after below, unless it is the first one
 				if(O == Ox.Dwn())
 				{
-					Node newNode = new Node(A,false); //full copy new node
+					Node newNode = new Node(A);
 					newNode.Adj(Ox.Dwn());  //new node sets its adj to the it's
 					Ox.Dwn(newNode);
 					A = A.Adj();
@@ -267,7 +211,7 @@ private void YMerger(Node Ox, Node Ax)
 					{
 						////System.Out.println("YMerge: After-MergeNeghb");
 						//then insert
-						Node newNode = new Node(A,false); //non full copy of node (no dwn should exist)
+						Node newNode = new Node(A); //non full copy of node (no dwn should exist)
 						newNode.Adj(O.Adj());  //new node sets its adj to the it's
 						O.Adj(newNode);	
 						A = A.Adj(); //iterate the A
@@ -294,16 +238,19 @@ private void YMerger(Node Ox, Node Ax)
 			
 		}
 		
-		while(A != null) //if its in here, its because Oit reached null, so just add the rest of the A in
+		//while(A != null) //if its in here, its because Oit reached null, so just add the rest of the A in
+		//{
+		if(A != null)
 		{
-			Node newNode = new Node(A,true);
+			Node newNode = A.CopySelf(copyTypes.copyAdj);	//this new node points to remaining list of A				
 			OLast.Adj(newNode);
-			A = A.Adj();
+			//A = A.Adj();
 			MergeNeighbour(OLast);
-			O = OLast.Adj();	
+		
+			//O = OLast.Adj();	
+		}	
 			
-			
-		}
+		//}
 	
 	
 }
@@ -342,6 +289,8 @@ private void MergeNeighbour(Node O)
 public void HashAdder(Node A)
 {
 	//given another hashTable head A, add to current hashtable
+	
+	
 	Node Oit = this.mainNode;
 	Node OLast = this.mainNode;
 	
@@ -353,14 +302,13 @@ public void HashAdder(Node A)
 		{
 			
 			
-			
-			
 			OverlapType compared = RetOverlap(Oit,A,false);	
 			
 			//System.out.println(A.toString());
 			//System.out.println(compared);
 			//try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
 			
+					
 			
 			switch(compared)
 			{
@@ -372,14 +320,12 @@ public void HashAdder(Node A)
 				YMerger(Oit,A); //merge the Ys of A into Oit
 					
 				
-				Oit = Oit.Adj();
+				Oit = Oit.Adj();			
+				
+				//OLast is null for some reason
 				if(OLast.Adj() != Oit)
 					OLast = OLast.Adj(); //increase the trail it
-				A = A.Adj();
-				
-				
-				
-				
+				A = A.Adj();				
 				
 				break;
 				
@@ -388,16 +334,17 @@ public void HashAdder(Node A)
 				//Should be taken care of already in after below, unless is first case
 				if(Oit == this.mainNode)
 				{					
-					Node newNode = new Node(A,true); //full copy new node
+					Node newNode = A.CopySelf(copyTypes.copyDwn);							
 					newNode.Adj(this.mainNode);  //new node sets its adj to the it's
 					this.mainNode = newNode;
 					Oit = this.mainNode;
+					OLast = this.mainNode;
 					A = A.Adj();					
 				} else {
 					//an A was created to the Before via Left or AEO
 					////System.out.println("Step1, whats coming in:" + A.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 					
-					Node newNode = new Node(A,true);
+					Node newNode = A.CopySelf(copyTypes.copyDwn);	
 					newNode.Adj(Oit);
 					////System.out.println("NewNode:" + newNode.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 					////System.out.println("Its new ADJ:" + Oit.toString());try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -429,7 +376,7 @@ public void HashAdder(Node A)
 					{
 						
 						//then insert
-						Node newNode = new Node(A,true); //full copy new node
+						Node newNode = A.CopySelf(copyTypes.copyDwn);	
 						newNode.Adj(Oit.Adj());  //new node sets its adj to the it's
 						Oit.Adj(newNode);	
 						A = A.Adj(); //iterate the A
@@ -459,7 +406,13 @@ public void HashAdder(Node A)
 		}
 		
 		
-		while(A != null) //if its in here, its because Oit reached null, so just add the rest of the A in
+		if(A != null)
+		{
+			Node newNode = A.CopySelf(copyTypes.copyBoth);
+			OLast.Adj(newNode);
+		}
+		
+		/*while(A != null) //if its in here, its because Oit reached null, so just add the rest of the A in
 		{
 			Node newNode = new Node(A,true);
 			OLast.Adj(newNode);
@@ -471,7 +424,7 @@ public void HashAdder(Node A)
 			
 			
 			
-		}
+		}*/
 	
 		
 		_FinalXMerger();
@@ -598,7 +551,9 @@ private void _SubsetSplitter(Node a, Node b)
 		{ //lb are equal, splits into two
 			
 			Node oldAdjPtr = a.Adj();
-			Node newNode = new Node(b.Ret(Bounds.u)+1,a.Ret(Bounds.u),a);
+			//Node newNode = new Node(b.Ret(Bounds.u)+1,a.Ret(Bounds.u),a);
+			Node newNode = a.CopySelf(copyTypes.copyDwn);
+			newNode.Set(b.Ret(Bounds.u)+1,a.Ret(Bounds.u));
 			a.Adj(newNode);
 			newNode.Adj(oldAdjPtr);
 			a.Set(b.Ret(Bounds.u), Bounds.u);			
@@ -606,7 +561,9 @@ private void _SubsetSplitter(Node a, Node b)
 		} else if(a.Ret(Bounds.u) == b.Ret(Bounds.u)) {
 			
 			Node oldAdjPtr = a.Adj();
-			Node newNode = new Node(b.Ret(Bounds.l),a.Ret(Bounds.u),a);
+			//Node newNode = new Node(b.Ret(Bounds.l),a.Ret(Bounds.u),a);
+			Node newNode = a.CopySelf(copyTypes.copyDwn);
+			newNode.Set(b.Ret(Bounds.l),a.Ret(Bounds.u));
 			a.Adj(newNode);
 			newNode.Adj(oldAdjPtr);
 			a.Set(b.Ret(Bounds.l) - 1, Bounds.u);
@@ -615,7 +572,9 @@ private void _SubsetSplitter(Node a, Node b)
 			
 			//split into 3
 			Node oldAdjPtr = a.Adj();
-			Node newNode = new Node(b.Ret(Bounds.l),a.Ret(Bounds.u),a);
+			//Node newNode = new Node(b.Ret(Bounds.l),a.Ret(Bounds.u),a);
+			Node newNode = a.CopySelf(copyTypes.copyDwn);
+			newNode.Set(b.Ret(Bounds.l),a.Ret(Bounds.u));
 			a.Adj(newNode);
 			newNode.Adj(oldAdjPtr);
 			a.Set(b.Ret(Bounds.l) - 1, Bounds.u);
@@ -636,14 +595,20 @@ public void _OverlapSplitter(Node center, Node overlap)
 	{
 		//overlap is to the left, break apart overlap
 		Node oldAdjPtr = overlap.Adj();
-		Node newNode = new Node(center.Ret(Bounds.l),overlap.Ret(Bounds.u),overlap);
+		//Node newNode = new Node(center.Ret(Bounds.l),overlap.Ret(Bounds.u),overlap);
+		Node newNode = overlap.CopySelf(copyTypes.copyDwn);
+		newNode.Set(center.Ret(Bounds.l),overlap.Ret(Bounds.u));
+		
 		overlap.Adj(newNode);
 		newNode.Adj(oldAdjPtr);
 		overlap.Set(center.Ret(Bounds.l) - 1, Bounds.u);
 	} else {
 		
 		Node oldAdjPtr = overlap.Adj();
-		Node newNode = new Node(center.Ret(Bounds.u)+1,overlap.Ret(Bounds.u),overlap);
+		//Node newNode = new Node(center.Ret(Bounds.u)+1,overlap.Ret(Bounds.u),overlap);
+		Node newNode = overlap.CopySelf(copyTypes.copyDwn);
+		newNode.Set(center.Ret(Bounds.u)+1,overlap.Ret(Bounds.u));
+		
 		overlap.Adj(newNode);
 		newNode.Adj(oldAdjPtr);
 		overlap.Set(center.Ret(Bounds.u), Bounds.u);

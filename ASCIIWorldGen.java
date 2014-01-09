@@ -5,28 +5,28 @@ import TheGreatHashtable.enums.*;
 public class ASCIIWorldGen {
 
 	
-	char[][] world = new char[Constants.WORLD_SIZE_X][Constants.WORLD_SIZE_Y];
+	char[][] world = new char[Constants.WORLD_SIZE_X+1][Constants.WORLD_SIZE_Y+1];
 	
 	public ASCIIWorldGen(){
-		for(int x= 0; x < Constants.WORLD_SIZE_X; x++)
-			for(int y= 0; y < Constants.WORLD_SIZE_Y; y++)
+		for(int x= 0; x <= Constants.WORLD_SIZE_X; x++)
+			for(int y= 0; y <= Constants.WORLD_SIZE_Y; y++)
 				world[x][y] = '*';
 		
 	}
 	
 	public void ResetWorld()
 	{
-		for(int x= 0; x < Constants.WORLD_SIZE_X; x++)
-			for(int y= 0; y < Constants.WORLD_SIZE_Y; y++)
+		for(int x= 0; x <= Constants.WORLD_SIZE_X; x++)
+			for(int y= 0; y <= Constants.WORLD_SIZE_Y; y++)
 				world[x][y] = '*';
 	}
 	
 	public String DrawWorld()
 	{
 		String toRet = "";
-		for(int y= 0; y < Constants.WORLD_SIZE_Y; y++)
+		for(int y= 0; y <= Constants.WORLD_SIZE_Y; y++)
 		{
-			for(int x = 0; x < Constants.WORLD_SIZE_X; x++)
+			for(int x = 0; x <= Constants.WORLD_SIZE_X; x++)
 			{
 				toRet += world[x][y];				
 			}
@@ -37,7 +37,7 @@ public class ASCIIWorldGen {
 	
 	public void LoadNodeIntoWorld(Hashtable hasht)
 	{
-		
+		ResetWorld();
 		
 		Node Xit = hasht.mainNode;
 		Node Yit;

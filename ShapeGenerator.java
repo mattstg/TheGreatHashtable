@@ -12,17 +12,17 @@ public class ShapeGenerator {
 	
 	
 	
-	public Node GenShape(Shape shape, S_XY size, S_XY loc)
+	public Node GenShape(Shape shape, S_XY loc, S_XY size)
 	{
 		Node toRet = new Node(); //Dud node to make compiler happy..
 		
 		switch(shape)
 		{
 		case Circle:
-			toRet = _MakeCircle(size,loc);  //Not functional atm
+			toRet = _MakeCircle(loc,size);  //Not functional atm
 			break;
 		case Square:
-			toRet = _MakeSquare(size,loc);
+			toRet = _MakeSquare(loc,size);
 			break;
 		default:
 			break;
@@ -40,7 +40,7 @@ public class ShapeGenerator {
 	
 	
 	//Need to complete 
-	private Node _MakeCircle(S_XY size,S_XY loc)
+	private Node _MakeCircle(S_XY loc,S_XY size)
 	{
 		Node toRet = new Node(1,1,null,null);
 		
@@ -48,11 +48,11 @@ public class ShapeGenerator {
 		return toRet;
 	}
 	
-	private Node _MakeSquare(S_XY size,S_XY loc)
+	private Node _MakeSquare(S_XY loc,S_XY size)
 	{
 			
-		Node yCompenent = new Node(size.y,loc.y+size.y,null,null);
-		Node toRet = new Node(loc.x,loc.x+size.x,null,yCompenent);
+		Node yCompenent = new Node(loc.y,loc.y+size.y-1,null,null);
+		Node toRet = new Node(loc.x,loc.x+size.x-1,null,yCompenent);
 		return toRet;
 		
 	}

@@ -1,0 +1,12 @@
+Things to Test for:
+Inverser: X||Y start @ 0 && End ? || WORLD_SIZE_X
+		  Y or X Is just One gaint Element
+		  Y becomes full, needs to delete X
+		  	at Start,Middle,End, Repeatdly
+
+		  	
+Find |ADDED THIS WHEN REALLY TIRED,NT SURE IF CORRECT|
+in Node Manipulater
+
+
+can add improper shaped sqaures to table, HashAdder Should do boundary checking

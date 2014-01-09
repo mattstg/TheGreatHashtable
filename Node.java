@@ -2,6 +2,7 @@ package TheGreatHashtable;
 
 import TheGreatHashtable.enums.Bounds;
 import TheGreatHashtable.enums.ENode;
+import TheGreatHashtable.enums.copyTypes;
 
 public class Node {
 	//Our Nodes Variables
@@ -13,7 +14,14 @@ public class Node {
 	Node adjNode = null; //the down node connection		   '' 
 	
 	//Our Node's Constructors
-	public Node(){} //useful for creating dud nodes to make compiler happy
+	public Node(){
+		Set(0,0);		
+		
+	} //useful for creating dud nodes to make compiler happy
+	
+	public Node(int l, int u){
+		Set(l,u);		
+	}
 	
 	public Node(int l, int u, Node adj, Node dwn){ // node constructor.
 		Set(l,u);
@@ -21,17 +29,21 @@ public class Node {
 		dwnNode = dwn;
 	}
 	
+	public Node(Node toCopy){ // node constructor.
+		Set(toCopy.Ret(Bounds.l),toCopy.Ret(Bounds.u));
+		adjNode = null;
+		dwnNode = null;
+	}
+	
+	///////////////replace these with the copy
+	/*
 	public Node(int l, int u, Node toCopy){ // node constructor.
 		Set(l,u);
 		adjNode = null;
 		copyList(toCopy.Dwn());
 	}
 	
-	public Node(Node toCopy){ // node constructor.
-		Set(toCopy.Ret(Bounds.l),toCopy.Ret(Bounds.u));
-		adjNode = null;
-		dwnNode = null;
-	}
+	
 	
 	public Node(Node toCopy, boolean fullCopy){ // node constructor.
 		if(fullCopy)
@@ -47,6 +59,41 @@ public class Node {
 		
 		
 		
+	}*/
+	////////////////////////////////////////////////////////////////////
+	
+	
+	
+	public Node CopySelf(copyTypes type)
+	{
+		Node toRet = new Node();
+		switch(type)
+		{
+		case copyNode:	
+			toRet.Set(l,u);
+			toRet.adjNode = null;
+			toRet.dwnNode = null;
+			break;
+			
+		case copyAdj:
+			toRet = CopyListAdj(this);
+			break;
+			
+		case copyDwn:
+			toRet.Set(l,u);
+			toRet.Dwn(CopyListAdj(this.Dwn()));
+			toRet.Adj(null);
+			break;
+			
+		case copyBoth:
+			toRet = CopyListFull(this);
+			break;	
+			
+		default:
+			return null;
+		}	
+		
+		return toRet;
 	}
 	
 	
@@ -90,31 +137,70 @@ public class Node {
 		
 	}
 	
-	private void copyList(Node O)
+	
+	
+	//O is the orginal node passed to be copied
+	private Node CopyListFull(Node O)
 	{
-		//O is the orginal node passed to be copied
-		if(O != null)
+		Node toRet = null;
+		
+		Node Oit = O; //stops messing with O ptr
+		Node it;
+		
+		if(Oit != null)
 		{
+			toRet = new Node(Oit);  //create a copy of O --just a node copy--
+			toRet.Dwn(CopyListAdj(Oit.Dwn())); //set the dwn node to be the first node
+			it = toRet; //save toRet at main to return later
+			Oit = Oit.Adj();
 			
-			Dwn(new Node(O,false)); //set the dwn node to be the first node
-			Node it = this.dwnNode; //pointing at the new dwnNode
+			//if(Oit != null)
+				//Oit = Oit.Adj(); //use O as the iterator for the original list
 			
-			
-			if(O != null)
-				O = O.Adj(); //use O as the iterator for the original list
-			
-			while(O != null)
+			while(Oit != null)
 			{
-				Node newNode = new Node(O,false);
+				Node newNode = new Node(Oit);
+				newNode.Dwn(CopyListAdj(Oit.Dwn()));
 				it.Adj(newNode);
-				O = O.Adj(); //cycle to next node to be copied
+				Oit = Oit.Adj(); //cycle to next node to be copied
 				it = it.Adj(); //cycle to next node to place
 			}
-		} else {
-			Dwn(null);
+		} 		
+		return toRet;
+	}
+	
+	
+	
+	private Node CopyListAdj(Node O) //given the O
+	{
+		Node toRet = null;
+		Node Oit = O; //stops messing with O ptr
+		Node it;
+		
+		if(Oit != null)
+		{
+			toRet = new Node(Oit); //use O as the iterator for the original list
+			it = toRet;
+			Oit = Oit.Adj();
+		
+		
+			while(Oit != null)
+			{
+				Node newNode = new Node(Oit);
+				it.Adj(newNode);
+				Oit = Oit.Adj(); //cycle to next node to be copied
+				it = it.Adj(); //cycle to next node to place
+			}
 		}
 		
+		
+		return toRet;
 	}
+	
+	
+	
+	
+	
 	
 	public int[] Ret(){
 		//returns the upper and lower bound in the form of an array of int[2]
