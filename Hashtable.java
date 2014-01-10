@@ -8,6 +8,7 @@ import TheGreatHashtable.enums.*;
 
 public class Hashtable {
 	Node mainNode = null;
+	NodeManipulator nami = new NodeManipulator();
 	
 	//The overlap table
 	OverlapType[][] overlapTable = {{OverlapType.Right,OverlapType.AEO,OverlapType.AEO},{OverlapType.OEA,OverlapType.Equals,OverlapType.AEO},{OverlapType.OEA,OverlapType.OEA,OverlapType.Left}};
@@ -430,6 +431,79 @@ public void HashAdder(Node A)
 		_FinalXMerger();
 	
 }
+
+
+
+public void HashSubtractor(Node Ax)
+{
+	//given another hashTable head A, add to current hashtable
+	
+	
+	Node Oit = this.mainNode;
+	
+		while(Oit != null && Ax != null)
+		{
+			
+			
+			OverlapType compared = RetOverlap(Oit,Ax,false);	
+			
+			
+			switch(compared)
+			{
+			case Equals: 
+				
+				////System.Out.println(ToString());					
+				//good case, do Y ADDER
+				Oit.Dwn(nami.YSubtractor(Oit.Dwn(),Ax.Dwn())); //merge the Ys of A into Oit
+							
+				Oit = Oit.Adj();					
+				Ax = Ax.Adj();				
+				
+				break;
+				
+			case Before:
+				
+				//If it comes before, no need to subtract it
+				Ax = Ax.Adj();
+				
+				break;
+				
+			case After:
+				
+				Oit = Oit.Adj();
+				break;
+				
+			case Right:		
+			case Left:	
+				_OverlapSplitter(Oit,Ax);
+				break;
+				
+			case OEA:	
+				_SubsetSplitter(Ax,Oit);
+				break;
+				
+			case AEO:			
+				_SubsetSplitter(Oit,Ax);
+				break;
+				
+			}		
+		
+		}		
+		//if A!= null, then there is sitll some A left, since nothing to subtract, a becomes null
+		Ax = null;
+				
+			
+		
+		
+		_FinalXMerger();  //remove when fix nami
+		mainNode = nami.CleanNode(mainNode);
+		//_NodeDeletor();
+	
+}
+
+
+
+
 
 private void _FinalXMerger()
 {

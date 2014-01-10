@@ -1,10 +1,11 @@
 package TheGreatHashtable;
 
 import TheGreatHashtable.enums.Bounds;
+import TheGreatHashtable.enums.OverlapType;
 import TheGreatHashtable.enums.copyTypes;
 
 public class NodeManipulator {
-
+	OverlapType[][] overlapTable = {{OverlapType.Right,OverlapType.AEO,OverlapType.AEO},{OverlapType.OEA,OverlapType.Equals,OverlapType.AEO},{OverlapType.OEA,OverlapType.OEA,OverlapType.Left}};
 	public NodeManipulator(){}
 	
 	
@@ -113,9 +114,223 @@ public class NodeManipulator {
 		return TRHead;
 	}
 	
+	public Node CleanNode(Node a)
+	{
+		Node toRet = a.CopySelf(copyTypes.copyBoth);
+		//toRet = _MergeAllX(toRet);
+		toRet = _DeleteAllEmptyX(toRet);
+		
+		return toRet;
+	}
 	
+	
+	public OverlapType RetOverlap(Node O,Node A, boolean tbool)
+	{
+		int bool = (tbool) ? 1:0;
+		
+		if(Compare(O.Ret(Bounds.l)-bool,A.Ret(Bounds.u)) == 2)
+			return OverlapType.Before;
+		if(Compare(A.Ret(Bounds.l)-bool,O.Ret(Bounds.u)) == 2)
+			return OverlapType.After;
+		
+				
+		return overlapTable[Compare(O.Ret(Bounds.l),A.Ret(Bounds.l))][Compare(O.Ret(Bounds.u),A.Ret(Bounds.u))];	
+				
+	}
+	
+	public int Compare(int a, int b)
+	{
+		if(a < b)
+			return 0;
+		if(a > b)
+			return 2;
+		if(a == b)
+			return 1;
+		
+		return -1;
+	}
+	
+	private Node _MergeAllX(Node a)
+	{
+		return null;
+	}
+	
+	private Node _DeleteAllEmptyX(Node a)
+	{
+		Node headNode = a;
+		Node tx = null;
+		
+		while(headNode.Dwn().Ret(Bounds.l) == -1)
+			headNode = headNode.Adj();	
+				
+		
+		tx = headNode;
+		
+		if(tx != null)
+		while(tx.Adj() != null)
+		{			
+			if(tx.Adj().Dwn() == null || tx.Adj().Dwn().Ret(Bounds.l) == -1)			
+				tx.Adj(tx.Adj().Adj());				
+			else
+				tx = tx.Adj();
+		}
+		
+		return headNode;
+		
+	}
 
-
+	public Node YSubtractor(Node O,Node a)
+	{
+		Node TRHead = O.CopySelf(copyTypes.copyAdj);
+		Node TRit = TRHead;
+		Node TRTrail = TRHead;
+		
+				
+		//Loop not entered for Y Sub
+		while(a != null && TRHead != null && TRit != null)
+		{
+						
+			
+			switch(RetOverlap(TRit,a,false))
+			{
+			case Equals: 
+				
+				if(TRit == TRHead)
+					TRHead = TRHead.Adj();
+				else	
+					TRTrail.Adj(TRTrail.Adj().Adj());
+				
+					
+				a = a.Adj();				
+				break;
+				
+			case Before:
+				//if happens before, no need to delete
+				a = a.Adj();
+				break;
+			case After:	
+				
+				TRit = TRit.Adj();
+				if(TRTrail.Adj() != TRit)
+					TRTrail = TRTrail.Adj();		
+				
+				break;
+				
+			case Right:		
+			case Left:	
+				_OverlapSplitter(TRit,a);
+				break;
+				
+			case OEA:	
+				_SubsetSplitter(a,TRit);
+				break;
+				
+			case AEO:	
+				_SubsetSplitter(TRit,a);
+				break;	
+					
+			
+			
+			}			
+		}
+		
+		return TRHead;
+	}
+	
+	private void _MergeNodes(Node O, Node A)
+	{
+		//given two nodes, will merge A into node O, O will be modded, not A
+		int lb;
+		int ub;
+		
+		if(O.Ret(Bounds.l) <= A.Ret(Bounds.l))
+			lb = O.Ret(Bounds.l);
+		else
+			lb = A.Ret(Bounds.l);
+		
+		if(O.Ret(Bounds.u) >= A.Ret(Bounds.u))
+			ub = O.Ret(Bounds.u);
+		else
+			ub = A.Ret(Bounds.u);
+		
+		O.Set(lb, ub);
+		
+		
+	}
+	
+	public void _OverlapSplitter(Node center, Node overlap)
+	{
+			
+		
+		//center node will not be split, overlap one will be
+		if(overlap.Ret(Bounds.l) < center.Ret(Bounds.l))
+		{
+			//overlap is to the left, break apart overlap
+			Node oldAdjPtr = overlap.Adj();
+			//Node newNode = new Node(center.Ret(Bounds.l),overlap.Ret(Bounds.u),overlap);
+			Node newNode = overlap.CopySelf(copyTypes.copyDwn);
+			newNode.Set(center.Ret(Bounds.l),overlap.Ret(Bounds.u));
+			
+			overlap.Adj(newNode);
+			newNode.Adj(oldAdjPtr);
+			overlap.Set(center.Ret(Bounds.l) - 1, Bounds.u);
+		} else {
+			
+			Node oldAdjPtr = overlap.Adj();
+			//Node newNode = new Node(center.Ret(Bounds.u)+1,overlap.Ret(Bounds.u),overlap);
+			Node newNode = overlap.CopySelf(copyTypes.copyDwn);
+			newNode.Set(center.Ret(Bounds.u)+1,overlap.Ret(Bounds.u));
+			
+			overlap.Adj(newNode);
+			newNode.Adj(oldAdjPtr);
+			overlap.Set(center.Ret(Bounds.u), Bounds.u);
+			
+		}
+	}
+	
+	private void _SubsetSplitter(Node a, Node b)
+	{
+		
+		//Node B is a subset of node A. A will be the one that always splits
+				//Node newNode()
+			if(a.Ret(Bounds.l) == b.Ret(Bounds.l))
+			{ //lb are equal, splits into two
+				
+				Node oldAdjPtr = a.Adj();
+				//Node newNode = new Node(b.Ret(Bounds.u)+1,a.Ret(Bounds.u),a);
+				Node newNode = a.CopySelf(copyTypes.copyDwn);
+				newNode.Set(b.Ret(Bounds.u)+1,a.Ret(Bounds.u));
+				a.Adj(newNode);
+				newNode.Adj(oldAdjPtr);
+				a.Set(b.Ret(Bounds.u), Bounds.u);			
+				
+			} else if(a.Ret(Bounds.u) == b.Ret(Bounds.u)) {
+				
+				Node oldAdjPtr = a.Adj();
+				//Node newNode = new Node(b.Ret(Bounds.l),a.Ret(Bounds.u),a);
+				Node newNode = a.CopySelf(copyTypes.copyDwn);
+				newNode.Set(b.Ret(Bounds.l),a.Ret(Bounds.u));
+				a.Adj(newNode);
+				newNode.Adj(oldAdjPtr);
+				a.Set(b.Ret(Bounds.l) - 1, Bounds.u);
+			
+			} else {
+				
+				//split into 3
+				Node oldAdjPtr = a.Adj();
+				//Node newNode = new Node(b.Ret(Bounds.l),a.Ret(Bounds.u),a);
+				Node newNode = a.CopySelf(copyTypes.copyDwn);
+				newNode.Set(b.Ret(Bounds.l),a.Ret(Bounds.u));
+				a.Adj(newNode);
+				newNode.Adj(oldAdjPtr);
+				a.Set(b.Ret(Bounds.l) - 1, Bounds.u);
+				_SubsetSplitter(a.Adj(),b);
+			}	
+			
+		
+	}
+	
+	
 	private Node _Gap(Node a, Node b)
 	{
 		Node toRet = new Node(a.Ret(Bounds.u)+1,b.Ret(Bounds.l)-1,null,null);
